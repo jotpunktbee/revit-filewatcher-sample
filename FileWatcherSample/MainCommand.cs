@@ -14,9 +14,10 @@ namespace FileWatcherSample
     [Transaction(TransactionMode.Manual)]
     public class MainCommand : IExternalCommand
     {
+        private static bool _subscribed = false;
+        private static System.IO.FileSystemWatcher _fileSystemWatcher = null;
+
         public static PushButton PushButton { get; set; }
-        public static bool Subscribed { get; private set; } = false;
-        public static System.IO.FileSystemWatcher FileSystemWatcher { get; private set; }
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -30,24 +31,84 @@ namespace FileWatcherSample
                 return Result.Failed;
             }
 
-            if (!Subscribed)
+            if (!_subscribed)
             {
-                PushButton.Image = new BitmapImage(Utils.CreateImagePackUri("Bell.16x16.png"));
-                PushButton.LargeImage = new BitmapImage(Utils.CreateImagePackUri("Bell.32x32.png"));
+                _fileSystemWatcher = new System.IO.FileSystemWatcher(@"C:\Temp");
+                try
+                {
+                    RegisterEvents();
+                }
+                catch (Exception ex)
+                {
+                    App.DialogService.ShowErrorMessage(ex.Message);
+                }
 
-                PushButton.ItemText = "Watching";
-                Subscribed = true;
+                Subscribe();
             }
             else
             {
-                PushButton.Image = new BitmapImage(Utils.CreateImagePackUri("Bell-Off.16x16.png"));
-                PushButton.LargeImage = new BitmapImage(Utils.CreateImagePackUri("Bell-Off.32x32.png"));
+                try
+                {
+                    UnregisterEvents();
+                }
+                catch (Exception ex)
+                {
+                    App.DialogService.ShowErrorMessage(ex.Message);
+                }
 
-                PushButton.ItemText = "Not Watching!";
-                Subscribed = false;
+                Unsubscribe();
             }
 
             return Result.Succeeded;
+        }
+
+        private static void Subscribe()
+        {
+            PushButton.Image = new BitmapImage(Utils.CreateImagePackUri("Bell.16x16.png"));
+            PushButton.LargeImage = new BitmapImage(Utils.CreateImagePackUri("Bell.32x32.png"));
+
+            PushButton.ItemText = "Watching";
+            _subscribed = true;
+        }
+
+        private static void Unsubscribe()
+        {
+            PushButton.Image = new BitmapImage(Utils.CreateImagePackUri("Bell-Off.16x16.png"));
+            PushButton.LargeImage = new BitmapImage(Utils.CreateImagePackUri("Bell-Off.32x32.png"));
+
+            PushButton.ItemText = "Not Watching!";
+            _subscribed = false;
+        }
+
+        private void OnChanged(object sender, System.IO.FileSystemEventArgs e)
+        {
+            // TODO: Add external event
+        }
+
+        private void OnCreated(object sender, System.IO.FileSystemEventArgs e)
+        {
+            // TODO: Add external event
+        }
+
+        private void RegisterEvents()
+        {
+            if (_fileSystemWatcher == null)
+                throw new ArgumentNullException("_fileSystemWatcher");
+
+            _fileSystemWatcher.Created += OnCreated;
+            _fileSystemWatcher.Changed += OnChanged;
+        }
+
+        private void UnregisterEvents()
+        {
+            if (_fileSystemWatcher == null)
+                return;
+
+            _fileSystemWatcher.Created -= OnCreated;
+            _fileSystemWatcher.Changed -= OnChanged;
+
+            _fileSystemWatcher.Dispose();
+            _fileSystemWatcher = null;
         }
     }
 }
