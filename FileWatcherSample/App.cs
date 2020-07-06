@@ -13,8 +13,6 @@ namespace FileWatcherSample
     public class App : IExternalApplication
     {
         public static App Instance = null;
-        public static FileSystemWatcher FileSystemWatcher = null;
-        public static Dictionary<string, PushButton> PushButtons = new Dictionary<string, PushButton>();
 
         private static string _path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -34,10 +32,10 @@ namespace FileWatcherSample
 
                 if (pushButton != null)
                 {
-                    pushButton.Image = new BitmapImage(CreateImagePackUri("Bell-Off.16x16.png"));
-                    pushButton.LargeImage = new BitmapImage(CreateImagePackUri("Bell-Off.32x32.png"));
+                    pushButton.Image = new BitmapImage(Utils.CreateImagePackUri("Bell-Off.16x16.png"));
+                    pushButton.LargeImage = new BitmapImage(Utils.CreateImagePackUri("Bell-Off.32x32.png"));
 
-                    PushButtons.Add(pushButton.Name, pushButton);
+                    MainCommand.PushButton = pushButton;
                 }
             }
             catch (Exception ex)
@@ -53,11 +51,6 @@ namespace FileWatcherSample
             App.Instance = null;
 
             return Result.Succeeded;
-        }
-
-        private Uri CreateImagePackUri(string fileName)
-        {
-            return new Uri("pack://application:,,,/FileWatcherSample;component/Resources/" + fileName);
         }
     }
 }
