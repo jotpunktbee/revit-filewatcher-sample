@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>FileWatcherSample</Name>
+		<Assembly>FileWatcherSample.dll</Assembly>
+		<FullClassName>FileWatcherSample.App</FullClassName>
+		<ClientId>AEF118D7-F49D-47F7-B1A4-413A8968E629</ClientId>
+		<VendorId>ch.jotpunktbee</VendorId>
+		<VendorDescription>jotpunktbee, http://jotpunktbee.ch</VendorDescription>
+	</AddIn>
+</RevitAddIns>
