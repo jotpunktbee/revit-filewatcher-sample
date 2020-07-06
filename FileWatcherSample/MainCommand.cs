@@ -26,7 +26,7 @@ namespace FileWatcherSample
 
             if (PushButton == null)
             {
-                TaskDialog.Show("Error", "PushButton is not defined!");
+                App.DialogService.ShowErrorMessage("PushButton is not defined!");
                 return Result.Failed;
             }
 

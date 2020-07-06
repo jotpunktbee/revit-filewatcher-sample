@@ -7,12 +7,14 @@ using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using FileWatcherSample.Services;
 
 namespace FileWatcherSample
 {
     public class App : IExternalApplication
     {
         public static App Instance = null;
+        public static IDialogService DialogService = new DialogService();
 
         private static string _path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -40,7 +42,7 @@ namespace FileWatcherSample
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Error", "Failed to initialize plugin!" + System.Environment.NewLine + ex.Message);
+                DialogService.ShowErrorMessage("Failed to initialize plugin!" + System.Environment.NewLine + ex.Message);
             }
 
             return Result.Succeeded;
