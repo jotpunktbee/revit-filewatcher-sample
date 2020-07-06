@@ -15,12 +15,16 @@ namespace FileWatcherSample
     {
         public static App Instance = null;
         public static IDialogService DialogService = new DialogService();
+        public static RequestHandler RequestHandler = null;
+        public static ExternalEvent ExternalEvent = null;
 
         private static string _path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         public Result OnStartup(UIControlledApplication a)
         {
             App.Instance = this;
+            App.RequestHandler = new RequestHandler();
+            App.ExternalEvent = ExternalEvent.Create(RequestHandler);
 
             try
             {

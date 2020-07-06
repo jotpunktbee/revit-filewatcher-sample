@@ -16,6 +16,7 @@ namespace FileWatcherSample
     {
         private static bool _subscribed = false;
         private static System.IO.FileSystemWatcher _fileSystemWatcher = null;
+        private static string _message = string.Empty;
 
         public static PushButton PushButton { get; set; }
 
@@ -82,12 +83,16 @@ namespace FileWatcherSample
 
         private void OnChanged(object sender, System.IO.FileSystemEventArgs e)
         {
-            // TODO: Add external event
+            MainCommand._message = $"{e.Name} has been changed!";
+            App.RequestHandler.RequestService.Make(Services.RequestId.ShowDialog);
+            App.ExternalEvent.Raise();
         }
 
         private void OnCreated(object sender, System.IO.FileSystemEventArgs e)
         {
-            // TODO: Add external event
+            MainCommand._message = $"{e.Name} has been created!";
+            App.RequestHandler.RequestService.Make(Services.RequestId.ShowDialog);
+            App.ExternalEvent.Raise();
         }
 
         private void RegisterEvents()
@@ -97,6 +102,7 @@ namespace FileWatcherSample
 
             _fileSystemWatcher.Created += OnCreated;
             _fileSystemWatcher.Changed += OnChanged;
+            _fileSystemWatcher.EnableRaisingEvents = true;
         }
 
         private void UnregisterEvents()
@@ -109,6 +115,12 @@ namespace FileWatcherSample
 
             _fileSystemWatcher.Dispose();
             _fileSystemWatcher = null;
+        }
+
+        public static void ShowInformation()
+        {
+            App.DialogService.ShowSucessMessage(_message);
+            _message = string.Empty;
         }
     }
 }
