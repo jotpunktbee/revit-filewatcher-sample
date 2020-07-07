@@ -33,8 +33,7 @@ namespace FileWatcherSample
 
         public static void MoveElementByTwoPoints(XYZ point1, XYZ point2, Element element)
         {
-            LocationPoint locationPoint = element.Location as LocationPoint;
-            if (locationPoint == null)
+            if (!(element.Location is LocationPoint locationPoint))
                 return;
 
             XYZ translation = point2 - point1;

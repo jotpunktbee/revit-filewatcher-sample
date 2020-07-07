@@ -18,7 +18,7 @@ namespace FileWatcherSample
         public static RequestHandler RequestHandler = null;
         public static ExternalEvent ExternalEvent = null;
 
-        private static string _path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private static readonly string _path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         public Result OnStartup(UIControlledApplication a)
         {

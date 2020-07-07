@@ -16,7 +16,6 @@ namespace FileWatcherSample
     {
         private static bool _subscribed = false;
         private static System.IO.FileSystemWatcher _fileSystemWatcher = null;
-        private static string _message = string.Empty;
         private static string _lastFile = string.Empty;
 
         public static PushButton PushButton { get; set; }

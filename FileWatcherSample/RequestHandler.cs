@@ -12,7 +12,7 @@ namespace FileWatcherSample
     public class RequestHandler : IExternalEventHandler
     {
         #region Field
-        private RequestService _requestService = new RequestService();
+        private readonly RequestService _requestService = new RequestService();
         #endregion
 
         #region Property
