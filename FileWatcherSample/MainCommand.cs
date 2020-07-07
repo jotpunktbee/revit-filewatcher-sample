@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace FileWatcherSample
         private static bool _subscribed = false;
         private static System.IO.FileSystemWatcher _fileSystemWatcher = null;
         private static string _lastFile = string.Empty;
+        private static string _lastFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
 
         public static PushButton PushButton { get; set; }
 
@@ -34,7 +36,15 @@ namespace FileWatcherSample
 
             if (!_subscribed)
             {
-                _fileSystemWatcher = new System.IO.FileSystemWatcher(@"C:\Temp", "*.csv");
+                string selectedFolder = App.DialogService.OpenFolderDialog(_lastFolder, Utils.GetRevitWindow(uiapp));
+                if (selectedFolder == null)
+                {
+                    App.DialogService.ShowErrorMessage("No folder selected!");
+                    return Result.Failed;
+                }
+
+                _lastFolder = selectedFolder;
+                _fileSystemWatcher = new System.IO.FileSystemWatcher(_lastFolder, "*.csv");
                 try
                 {
                     RegisterEvents();
