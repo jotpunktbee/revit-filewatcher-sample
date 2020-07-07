@@ -130,7 +130,7 @@ namespace FileWatcherSample
             {
                 elements.Add(
                     doc.GetElement(fields[0]),
-                    new XYZ(int.Parse(fields[1]), int.Parse(fields[2]), int.Parse(fields[3])));
+                    new XYZ(double.Parse(fields[1]), double.Parse(fields[2]), int.Parse(fields[3])));
             });
 
             using (Transaction t = new Transaction(doc))
