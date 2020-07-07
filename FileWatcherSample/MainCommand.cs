@@ -78,7 +78,7 @@ namespace FileWatcherSample
             PushButton.Image = new BitmapImage(Utils.CreateImagePackUri("Bell-Off.16x16.png"));
             PushButton.LargeImage = new BitmapImage(Utils.CreateImagePackUri("Bell-Off.32x32.png"));
 
-            PushButton.ItemText = "Not Watching!";
+            PushButton.ItemText = "Not Watching";
             _subscribed = false;
         }
 
