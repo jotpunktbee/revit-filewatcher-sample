@@ -29,7 +29,7 @@ namespace FileWatcherSample
         #endregion
 
         #region Method
-        public void Execute(UIApplication app)
+        public void Execute(UIApplication uiapp)
         {
             try
             {
@@ -37,8 +37,8 @@ namespace FileWatcherSample
                 {
                     case RequestId.None:
                         break;
-                    case RequestId.ShowDialog:
-                        MainCommand.ShowInformation();
+                    case RequestId.MoveElements:
+                        MainCommand.MoveByXyz(uiapp);
                         break;
                 }
             }

@@ -17,6 +17,7 @@ namespace FileWatcherSample
         private static bool _subscribed = false;
         private static System.IO.FileSystemWatcher _fileSystemWatcher = null;
         private static string _message = string.Empty;
+        private static string _lastFile = string.Empty;
 
         public static PushButton PushButton { get; set; }
 
@@ -34,7 +35,7 @@ namespace FileWatcherSample
 
             if (!_subscribed)
             {
-                _fileSystemWatcher = new System.IO.FileSystemWatcher(@"C:\Temp");
+                _fileSystemWatcher = new System.IO.FileSystemWatcher(@"C:\Temp", "*.csv");
                 try
                 {
                     RegisterEvents();
@@ -83,15 +84,15 @@ namespace FileWatcherSample
 
         private void OnChanged(object sender, System.IO.FileSystemEventArgs e)
         {
-            MainCommand._message = $"{e.Name} has been changed!";
-            App.RequestHandler.RequestService.Make(Services.RequestId.ShowDialog);
+            MainCommand._lastFile = e.FullPath;
+            App.RequestHandler.RequestService.Make(Services.RequestId.MoveElements);
             App.ExternalEvent.Raise();
         }
 
         private void OnCreated(object sender, System.IO.FileSystemEventArgs e)
         {
-            MainCommand._message = $"{e.Name} has been created!";
-            App.RequestHandler.RequestService.Make(Services.RequestId.ShowDialog);
+            MainCommand._lastFile = e.FullPath;
+            App.RequestHandler.RequestService.Make(Services.RequestId.MoveElements);
             App.ExternalEvent.Raise();
         }
 
@@ -117,10 +118,35 @@ namespace FileWatcherSample
             _fileSystemWatcher = null;
         }
 
-        public static void ShowInformation()
+        public static void MoveByXyz(UIApplication uiapp)
         {
-            App.DialogService.ShowSucessMessage(_message);
-            _message = string.Empty;
+            if (string.IsNullOrEmpty(_lastFile))
+                return;
+
+            Dictionary<Element, XYZ> elements = new Dictionary<Element, XYZ>();
+
+            Document doc = uiapp.ActiveUIDocument.Document;
+            Utils.ParseCsv(_lastFile, fields =>
+            {
+                elements.Add(
+                    doc.GetElement(fields[0]),
+                    new XYZ(int.Parse(fields[1]), int.Parse(fields[2]), int.Parse(fields[3])));
+            });
+
+            using (Transaction t = new Transaction(doc))
+            {
+                t.Start("Move Elements");
+
+                foreach (KeyValuePair<Element, XYZ> element in elements)
+                {
+                    if (element.Value == null)
+                        continue;
+                    
+                    Utils.MoveElementByTwoPoints((element.Key.Location as LocationPoint).Point, element.Value, element.Key);
+                }
+
+                t.Commit();
+            }
         }
     }
 }

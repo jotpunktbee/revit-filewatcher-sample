@@ -13,7 +13,7 @@ namespace FileWatcherSample.Services
     public enum RequestId : int
     {
         None = 0,
-        ShowDialog = 1,
+        MoveElements = 1,
     }
 
     public class RequestService
