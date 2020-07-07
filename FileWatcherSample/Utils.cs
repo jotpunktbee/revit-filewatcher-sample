@@ -1,10 +1,15 @@
-﻿using Autodesk.Revit.DB;
-using Microsoft.VisualBasic.FileIO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
+
+using Microsoft.VisualBasic.FileIO;
 
 namespace FileWatcherSample
 {
@@ -38,6 +43,12 @@ namespace FileWatcherSample
 
             XYZ translation = point2 - point1;
             locationPoint.Move(translation);
+        }
+
+        public static Window GetRevitWindow(UIApplication uiapp)
+        {
+            HwndSource hwndSource = HwndSource.FromHwnd(uiapp.MainWindowHandle);
+            return hwndSource.RootVisual as Window;
         }
         #endregion
     }
